@@ -1,0 +1,18 @@
+prometheus.scrape "otel_metrics" {
+  targets = [
+    {"__address__" = "otel-collector:8889", "job" = "otel-collector"},
+  ]
+  forward_to = [prometheus.remote_write.prom.receiver]
+}
+
+prometheus.remote_write "prom" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
+loki.write "app_logs" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
